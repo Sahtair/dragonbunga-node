@@ -26,6 +26,15 @@ app.get("/users", async function (req, res) {
   res.send(response.rows);
 });
 
+app.get("/users/:userId", async function (req, res) {
+  const response = await client.query("SELECT * from users where user_id = $1", [
+    req.params.userId,
+  ]);
+  res
+    .status(response.rowCount ? 200 : 404)
+    .send(response.rows?.[0] ?? "User not found");
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening at http://localhost:${PORT}`);
 });
