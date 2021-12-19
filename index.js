@@ -21,11 +21,9 @@ app.get("/", function (req, res) {
   res.send("hello world");
 });
 
-app.get("/users", function (req, res) {
-  client.query("SELECT * from users", (err, response) => {
-    console.log(err, response);
-    res.send(response.rows);
-  });
+app.get("/users", async function (req, res) {
+  const response = await client.query("SELECT * from users");
+  res.send(response.rows);
 });
 
 app.listen(PORT, () => {
