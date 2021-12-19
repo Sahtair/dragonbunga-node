@@ -2,8 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const { Client } = require("pg");
 
-console.log(process.env);
-
 const client = new Client({
   user: process.env.PUSER,
   host: process.env.PGHOST,
@@ -17,12 +15,17 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/", function (req, res) {
-  client.query("SELECT * from users", (err, res) => {
-    console.log(err, res);
-    client.end();
-  });
   res.send("hello world");
+});
+
+app.get("/users", function (req, res) {
+  client.query("SELECT * from users", (err, response) => {
+    console.log(err, response);
+    res.send(response.rows);
+  });
 });
 
 app.listen(PORT, () => {
