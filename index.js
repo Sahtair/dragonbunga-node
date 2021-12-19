@@ -17,6 +17,16 @@ const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  if (req.method === "POST") {
+    const { data } = req.body;
+    if (!data.email) {
+      req.body.data.email = "";
+    }
+  }
+  next();
+});
+
 app.get("/", function (req, res) {
   res.send("hello world");
 });
@@ -27,10 +37,28 @@ app.get("/users", async function (req, res) {
 });
 
 app.get("/users/:userId", async function (req, res) {
-  const response = await client.query(`SELECT * from users where user_id = ${req.params.userId}`);
+  const response = await client.query(
+    `SELECT * from users where user_id = ${req.params.userId}`
+  );
   res
     .status(response.rowCount ? 200 : 404)
     .send(response.rows?.[0] ?? "User not found");
+});
+
+app.post("/users", async (req, res) => {
+  const { data } = req.body;
+
+  try {
+    await client.query(
+      "INSERT INTO users(name, surname, email) VALUES ($1, $2, $3)",
+      Object.values(data)
+    );
+  } catch (e) {
+    console.log(e);
+    return res.send(500, "something went wrong", e);
+  }
+
+  res.send("Inserted user");
 });
 
 app.listen(PORT, () => {
