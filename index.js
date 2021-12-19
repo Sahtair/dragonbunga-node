@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const { Validator } = require("express-json-validator-middleware");
 const { Client } = require("pg");
 
 const client = new Client({
@@ -45,7 +46,10 @@ app.get("/users/:userId", async function (req, res) {
     .send(response.rows?.[0] ?? "User not found");
 });
 
-app.post("/users", async (req, res) => {
+const validateBody = new Validator();
+const bodySchema = require("./postBodySchema.json");
+
+app.post("/users", validateBody({ body: bodySchema }), async (req, res) => {
   const { data } = req.body;
 
   try {

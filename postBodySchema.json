@@ -1,0 +1,29 @@
+{
+    "type": "object",
+    "required": [
+        "data"
+    ],
+    "properties": {
+        "data": {
+            "type": "object",
+            "required": [
+                "name",
+                "surname"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the user"
+                },
+                "surname": {
+                    "type": "string",
+                    "description": "The surname of the user"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "The email of the user"
+                }
+            }
+        }
+    }
+}
